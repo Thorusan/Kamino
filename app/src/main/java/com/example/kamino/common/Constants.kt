@@ -1,4 +1,4 @@
-package com.example.kamino.restconnection
+package com.example.kamino.common
 
 class Constants {
     companion object {

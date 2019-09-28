@@ -1,31 +1,34 @@
 package com.example.kamino.restconnection
 
+import com.example.kamino.common.Constants.Companion.BASE_URL
 import com.example.kamino.datamodel.KaminoModel
-import com.example.kamino.restconnection.Constants.Companion.BASE_URL
 import io.reactivex.Observable
+import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
-import retrofit2.http.Query
 
 interface KaminoApiService {
-    @GET(BASE_URL)
-    fun getKaminoPlanet(
-        @Query("name") name: String,
-        @Query("rotation_period") rotationPeriod: Int,
-        @Query("orbital_period") orbitalPeriod: Int,
-        @Query("diameter") diameter: Int,
-        @Query("climate") climate: String,
-        @Query("gravity") gravity: String,
-        @Query("terrain") terrain: String,
-        @Query("surface_water") surfaceWater: Int,
-        @Query("population") population: Int,
-        @Query("residents") residents: Array<KaminoModel.Resident>,
-        @Query("created") created: String,
-        @Query("edited") edited: String,
-        @Query("image_url") imageUrl: String,
-        @Query("likes") likes: Int
+    @GET(BASE_URL+"/planets/10")
+    fun getKaminoPlanet(): Observable<KaminoModel.KaminoPlanet>
 
-    ):
-            Observable<KaminoModel.KaminoPlanet>
+
+    companion object {
+        fun create(): KaminoApiService {
+
+            val retrofit = Retrofit.Builder()
+                .addCallAdapterFactory(
+                    RxJava2CallAdapterFactory.create()
+                )
+                .addConverterFactory(
+                    GsonConverterFactory.create()
+                )
+                .baseUrl(BASE_URL)
+                .build()
+
+            return retrofit.create(KaminoApiService::class.java)
+        }
+    }
 }
 
 
