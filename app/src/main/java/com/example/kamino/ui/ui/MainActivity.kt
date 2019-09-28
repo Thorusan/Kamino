@@ -6,9 +6,10 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import butterknife.BindView
 import butterknife.ButterKnife
-import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.kamino.R
 import com.example.kamino.datamodel.KaminoModel
+import com.example.kamino.utils.GlideApp
 import io.reactivex.disposables.Disposable
 import retrofit2.Response
 
@@ -39,6 +40,7 @@ class MainActivity : AppCompatActivity(), MainViewPresenterContract.MainView {
     var disposable: Disposable? = null
     var planetData: KaminoModel.KaminoPlanet? = null
     var residentsList: Array<String>? = null
+    var isThumbnail: Boolean = true;
 
     private var mainPresenterImplementation: MainPresenterImplementation? = null
 
@@ -51,6 +53,16 @@ class MainActivity : AppCompatActivity(), MainViewPresenterContract.MainView {
         mainPresenterImplementation = MainPresenterImplementation(this)
         mainPresenterImplementation!!.loadData()
 
+
+        imgPlanet.setOnClickListener {
+            if (!isThumbnail) {
+                loadThumbnailPicture();
+                isThumbnail = true;
+            } else {
+                loadLargePicture()
+                isThumbnail = false;
+            }
+        }
     }
 
     override fun onDestroy() {
@@ -64,12 +76,13 @@ class MainActivity : AppCompatActivity(), MainViewPresenterContract.MainView {
             residentsList = responseModel.body()!!.residents
 
             setFields()
+            loadThumbnailPicture()
         }
 
     }
 
     private fun setFields() {
-        Glide.with(this).load(planetData?.imageUrl).into(imgPlanet);
+
         textName.text = planetData?.name
         textRotationPeriod.text = planetData?.rotationPeriod.toString()
         textOrbitalPeriod.text = planetData?.orbitalPeriod.toString()
@@ -80,6 +93,23 @@ class MainActivity : AppCompatActivity(), MainViewPresenterContract.MainView {
         textSurfaceWater.text = planetData?.surfaceWater.toString()
         textPopulation.text = planetData?.population.toString()
         textLikes.text = planetData?.likes.toString()
+    }
+
+    private fun loadThumbnailPicture() {
+        GlideApp.with(this)
+            .load(planetData?.imageUrl)
+            //.thumbnail(0.5f)
+            //.override(150, 150)
+            .apply(RequestOptions.overrideOf(250, 250))
+            .into(imgPlanet);
+    }
+
+    private fun loadLargePicture() {
+        GlideApp
+            .with(this)
+            .load(planetData?.imageUrl)
+            .apply(RequestOptions.overrideOf(2000, 2000))
+            .into(imgPlanet);
     }
 
 
