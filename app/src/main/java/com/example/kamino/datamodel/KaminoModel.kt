@@ -3,7 +3,7 @@ package com.example.kamino.datamodel
 import com.google.gson.annotations.SerializedName
 import org.threeten.bp.LocalDateTime
 
-object KaminoModel {
+open class KaminoModel {
     data class KaminoPlanet(
         @SerializedName("name")
         val name: String,

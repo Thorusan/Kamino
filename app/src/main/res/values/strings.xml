@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">Kamino</string>
+    <string name="kamino_planet">Kamino planet</string>
+    <string name="name">Name:</string>
+    <string name="rotation_period">Rotation period:</string>
+    <string name="orbital_period">Orbital period:</string>
+    <string name="diameter">Diameter:</string>
+    <string name="climate">Climate:</string>
+    <string name="likes">Likes:</string>
+    <string name="population">Population:</string>
+    <string name="surface_water">Surface water:</string>
+    <string name="terrain">Terrain:</string>
+    <string name="gravity">Gravity:</string>
 </resources>
