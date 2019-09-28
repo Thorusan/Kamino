@@ -3,31 +3,33 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     tools:context=".ui.ui.MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
 
-        android:paddingStart="24dp"
-        android:paddingEnd="24dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="320dp"
+        <ImageView
+            android:id="@+id/img_planet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginBottom="16dp"
-            android:gravity="center">
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp" />
 
 
-            <ImageView
-                android:id="@+id/img_planet"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center" />
-        </LinearLayout>
+        <Button
+            android:id="@+id/btn_residents"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:drawableStart="@drawable/ic_residents"
+            android:text="Kamino residents">
+
+        </Button>
 
         <LinearLayout
             android:layout_width="match_parent"

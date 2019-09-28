@@ -11,7 +11,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.example.kamino.ui.ui.MainActivity">
+        <activity
+            android:name=".ui.ui.ResidentsListActivity"
+            android:label="@string/title_activity_residents_list"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".ui.ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

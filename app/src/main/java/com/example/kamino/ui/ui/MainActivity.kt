@@ -1,6 +1,8 @@
 package com.example.kamino.ui.ui
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -16,6 +18,8 @@ import retrofit2.Response
 class MainActivity : AppCompatActivity(), MainViewPresenterContract.MainView {
     @BindView(R.id.img_planet)
     lateinit var imgPlanet: ImageView;
+    @BindView(R.id.btn_residents)
+    lateinit var btnResidents: Button;
     @BindView(R.id.text_name)
     lateinit var textName: TextView;
     @BindView(R.id.text_rotation_period)
@@ -63,6 +67,15 @@ class MainActivity : AppCompatActivity(), MainViewPresenterContract.MainView {
                 isThumbnail = false;
             }
         }
+
+        btnResidents.setOnClickListener {
+            val intent: Intent? = Intent(this, ResidentsListActivity::class.java);
+            if (intent != null) {
+                intent.putExtra("residents", residentsList)
+                startActivity(intent);
+            }
+
+        }
     }
 
     override fun onDestroy() {
@@ -82,7 +95,6 @@ class MainActivity : AppCompatActivity(), MainViewPresenterContract.MainView {
     }
 
     private fun setFields() {
-
         textName.text = planetData?.name
         textRotationPeriod.text = planetData?.rotationPeriod.toString()
         textOrbitalPeriod.text = planetData?.orbitalPeriod.toString()
@@ -108,7 +120,7 @@ class MainActivity : AppCompatActivity(), MainViewPresenterContract.MainView {
         GlideApp
             .with(this)
             .load(planetData?.imageUrl)
-            .apply(RequestOptions.overrideOf(2000, 2000))
+            .apply(RequestOptions.overrideOf(1000, 1000))
             .into(imgPlanet);
     }
 
