@@ -25,7 +25,7 @@ open class KaminoModel {
         @SerializedName("population")
         val population: Int,
         @SerializedName("residents")
-        val residents: Array<String>,
+        val residents: ArrayList<String>,
         //val created: LocalDateTime,
         @SerializedName("created")
         val created: String,
@@ -49,7 +49,7 @@ open class KaminoModel {
             parcel.readString(),
             parcel.readInt(),
             parcel.readInt(),
-            parcel.createStringArray(),
+            parcel.createStringArrayList(),
             parcel.readString(),
             parcel.readString(),
             parcel.readString(),
@@ -67,7 +67,7 @@ open class KaminoModel {
             parcel.writeString(terrain)
             parcel.writeInt(surfaceWater)
             parcel.writeInt(population)
-            parcel.writeStringArray(residents)
+            parcel.writeList(residents)
             parcel.writeString(created)
             parcel.writeString(edited)
             parcel.writeString(imageUrl)

@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity(), MainViewPresenterContract.MainView {
 
     var disposable: Disposable? = null
     var planetData: KaminoModel.KaminoPlanet? = null
-    var residentsList: Array<String>? = null
+    var residentsList: ArrayList<String>? = null
     var isThumbnail: Boolean = true;
 
     private var mainPresenterImplementation: MainPresenterImplementation? = null
@@ -71,7 +71,7 @@ class MainActivity : AppCompatActivity(), MainViewPresenterContract.MainView {
         btnResidents.setOnClickListener {
             val intent: Intent? = Intent(this, ResidentsListActivity::class.java);
             if (intent != null) {
-                intent.putExtra("residents", residentsList)
+                intent.putStringArrayListExtra("residents", residentsList)
                 startActivity(intent);
             }
 
