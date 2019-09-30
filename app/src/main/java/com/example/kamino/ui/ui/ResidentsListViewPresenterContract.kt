@@ -3,13 +3,13 @@ package com.example.kamino.ui.ui
 import com.example.kamino.datamodel.KaminoModel
 import retrofit2.Response
 
-interface MainViewPresenterContract {
+interface ResidentsListViewPresenterContract {
     interface ViewInterface {
-        fun displayPlanetData(planetData: Response<KaminoModel.KaminoPlanet>)
+        fun displayResidentData(residentData: Response<KaminoModel.Resident>)
     }
 
     interface PresenterInterface {
-        fun getPlanetData()
+        fun getResidentData(residentUrl: String)
         fun onStop()
     }
 }

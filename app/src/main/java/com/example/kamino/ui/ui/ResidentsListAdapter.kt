@@ -4,63 +4,56 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.annotation.LayoutRes
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.example.kamino.R
-import java.util.ArrayList
+import java.util.*
 
-class ResidentsListAdapter(val context: Context, val residentsList: ArrayList<String>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ResidentsListAdapter(
+    val context: Context,
+    val residentsList: ArrayList<String>,
+    val adapterOnClick : (String) -> Unit
+) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var selectedPosition: Int = -1;
 
-
-    fun ViewGroup.inflate(@LayoutRes layoutRes: Int, attachToRoot: Boolean = false): View {
-        return LayoutInflater.from(context).inflate(layoutRes, this, attachToRoot)
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val inflatedView = parent.inflate(R.layout.resident_row, false)
-        return PackagesViewHolder(inflatedView)
+        val view: View =
+            LayoutInflater.from(parent.context).inflate(R.layout.resident_row, parent, false)
+        return ResidentsViewHolder(view)
     }
 
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
-        val pricePackage = residentsList!![position]
+        val resident = residentsList!![position]
 
-        val holder = viewHolder as PackagesViewHolder
-        holder.bindResident(pricePackage)
+        val holder = viewHolder as ResidentsViewHolder
+        holder.bindResident(resident)
 
         holder.container.setOnClickListener {
 
-            //adapterOnClick(pricePackage);
+            adapterOnClick(resident);
             selectedPosition = position;
             notifyDataSetChanged();
         }
-
-
-
-       /* if(selectedPosition == position){
-            holder.imgCheckPackage.setBackground(context.getDrawable(R.drawable.oval_right_booked))
-        } else {
-            holder.imgCheckPackage.setBackground(context.getDrawable(R.drawable.oval_right_disabled))
-        }*/
+        holder.container.setBackground(context.getDrawable(R.drawable.selected))
     }
 
     override fun getItemCount(): Int {
-        return residentsList!!.size
+        return residentsList.size
     }
 
 
-    internal inner class PackagesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    internal inner class ResidentsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private var view: View = itemView;
         //private var resident: KaminoModel.Resident? = null
 
         @BindView(R.id.container)
-        lateinit var container: LinearLayout
-        @BindView(R.id.test_resident_name)
+        lateinit var container: CardView
+        @BindView(R.id.text_resident_name)
         lateinit var textResidentName: TextView
 
 

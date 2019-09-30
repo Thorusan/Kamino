@@ -93,45 +93,39 @@ open class KaminoModel {
         @SerializedName("name")
         val name: String,
         @SerializedName("height")
-        val height: Int,
-        @SerializedName("mass: Double")
-        val mass: Double,
+        val height: Int?,
+        @SerializedName("mass")
+        val mass: String,
         @SerializedName("hair_color")
         val hairColor: String,
         @SerializedName("skin_color")
         val skinColor: String,
         @SerializedName("eye_color")
         val eyeColor: String,
-        @SerializedName("birth_<ear")
-        val birthYear: String,
+        @SerializedName("birth_year")
+        val birthYear: String?,
         @SerializedName("gender")
         val gender: String,
-        @SerializedName("population")
-        val population: Int,
-        @SerializedName("coord")
+        @SerializedName("homeworld")
         val homeworld: String,
         //val created: LocalDateTime,
-        @SerializedName("created:")
+        @SerializedName("created")
         val created: String,
         //val edited: LocalDateTime,
         @SerializedName("edited")
         val edited: String,
         @SerializedName("image_url")
         val imageUrl: String
-
-
-
     ) : Parcelable {
         constructor(parcel: Parcel) : this(
             parcel.readString(),
             parcel.readInt(),
-            parcel.readDouble(),
             parcel.readString(),
             parcel.readString(),
             parcel.readString(),
             parcel.readString(),
             parcel.readString(),
-            parcel.readInt(),
+            parcel.readString(),
             parcel.readString(),
             parcel.readString(),
             parcel.readString(),
@@ -141,14 +135,17 @@ open class KaminoModel {
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {
             parcel.writeString(name)
-            parcel.writeInt(height)
-            parcel.writeDouble(mass)
+            if (height != null) {
+                parcel.writeInt(height)
+            }
+            if (mass != null) {
+                parcel.writeString(mass)
+            }
             parcel.writeString(hairColor)
             parcel.writeString(skinColor)
             parcel.writeString(eyeColor)
             parcel.writeString(birthYear)
             parcel.writeString(gender)
-            parcel.writeInt(population)
             parcel.writeString(homeworld)
             parcel.writeString(created)
             parcel.writeString(edited)

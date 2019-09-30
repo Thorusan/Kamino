@@ -15,7 +15,7 @@ import com.example.kamino.utils.GlideApp
 import io.reactivex.disposables.Disposable
 import retrofit2.Response
 
-class MainActivity : AppCompatActivity(), MainViewPresenterContract.MainView {
+class MainActivity : AppCompatActivity(), MainViewPresenterContract.ViewInterface {
     @BindView(R.id.img_planet)
     lateinit var imgPlanet: ImageView;
     @BindView(R.id.btn_residents)
@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity(), MainViewPresenterContract.MainView {
         ButterKnife.bind(this);
 
         mainPresenterImplementation = MainPresenterImplementation(this)
-        mainPresenterImplementation!!.loadData()
+        mainPresenterImplementation!!.getPlanetData()
 
 
         imgPlanet.setOnClickListener {
