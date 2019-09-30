@@ -15,7 +15,7 @@ import java.util.*
 class ResidentsListAdapter(
     val context: Context,
     val residentsList: ArrayList<String>,
-    val adapterOnClick : (String) -> Unit
+    val onChooseResident : (String) -> Unit
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -35,7 +35,7 @@ class ResidentsListAdapter(
 
         holder.container.setOnClickListener {
 
-            adapterOnClick(resident);
+            onChooseResident(resident);
             selectedPosition = position;
             notifyDataSetChanged();
         }

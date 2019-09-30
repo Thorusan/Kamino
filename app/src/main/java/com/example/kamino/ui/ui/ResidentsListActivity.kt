@@ -2,6 +2,7 @@ package com.example.kamino.ui.ui
 
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -46,6 +47,8 @@ class ResidentsListActivity : AppCompatActivity(),
     lateinit var textGender: TextView;
     @BindView(R.id.text_homeworld)
     lateinit var textHomeworld: TextView
+    @BindView(R.id.btn_close_details)
+    lateinit var btnCloseDetails: ImageButton
 
     lateinit var residentsList: ArrayList<String>
 
@@ -61,6 +64,15 @@ class ResidentsListActivity : AppCompatActivity(),
 
         getResidentsFromBundle()
         setResidentsListAdapter()
+
+        registerListener();
+
+    }
+
+    private fun registerListener() {
+        btnCloseDetails.setOnClickListener {
+            containerResident.visibility = View.GONE;
+        }
 
     }
 
@@ -83,11 +95,10 @@ class ResidentsListActivity : AppCompatActivity(),
     }
 
     /**
-     * Call api for getting resident Data
+     * Call api for getting Resident data
      */
     private fun callApi_ResidentDetails(residentUrl: String) {
         residentsListPresenterImplementation?.getResidentData(residentUrl)
-
     }
 
     override fun displayResidentData(residentData: Response<KaminoModel.Resident>) {
