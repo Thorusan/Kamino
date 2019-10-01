@@ -36,12 +36,29 @@ class ResidentsListAdapter(
 
         holder.container.setOnClickListener {
             onChooseResident(resident);
-            selectedPosition = position;
+            setSelectedPosition(position);
             notifyDataSetChanged();
         }
 
         highlightSelectedRow(position, holder)
+    }
 
+    internal inner class ResidentsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        @BindView(R.id.container)
+        lateinit var container: MaterialCardView
+        @BindView(R.id.text_resident_name)
+        lateinit var textResidentName: TextView
+
+        private var view: View = itemView;
+
+        init {
+            view.isClickable = true
+            ButterKnife.bind(this, view)
+        }
+
+        fun bindResident(resident: String) {
+            textResidentName.text = resident
+        }
     }
 
     private fun highlightSelectedRow(
@@ -73,27 +90,7 @@ class ResidentsListAdapter(
         selectedPosition = pos
     }
 
-
     override fun getItemCount(): Int {
         return residentsList.size
-    }
-
-
-    internal inner class ResidentsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        @BindView(R.id.container)
-        lateinit var container: MaterialCardView
-        @BindView(R.id.text_resident_name)
-        lateinit var textResidentName: TextView
-
-        private var view: View = itemView;
-
-        init {
-            view.isClickable = true
-            ButterKnife.bind(this, view)
-        }
-
-        fun bindResident(resident: String) {
-            textResidentName.text = resident
-        }
     }
 }
