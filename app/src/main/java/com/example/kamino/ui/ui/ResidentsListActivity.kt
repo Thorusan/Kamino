@@ -72,6 +72,7 @@ class ResidentsListActivity : AppCompatActivity(),
     private fun registerListener() {
         btnCloseDetails.setOnClickListener {
             containerResident.visibility = View.GONE;
+            containerList.visibility = View.VISIBLE
         }
 
     }
@@ -103,6 +104,8 @@ class ResidentsListActivity : AppCompatActivity(),
 
     override fun displayResidentData(residentData: Response<KaminoModel.Resident>) {
         containerResident?.visibility = View.VISIBLE;
+        containerList?.visibility = View.GONE;
+
         textName?.text = residentData.body()?.name
         textHeight?.text = residentData.body()?.height.toString()
         textMass?.text = residentData.body()?.mass

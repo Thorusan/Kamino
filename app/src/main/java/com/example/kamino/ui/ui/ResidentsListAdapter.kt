@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.example.kamino.R
+import com.google.android.material.card.MaterialCardView
 import java.util.*
 
 class ResidentsListAdapter(
@@ -52,7 +53,7 @@ class ResidentsListAdapter(
         //private var resident: KaminoModel.Resident? = null
 
         @BindView(R.id.container)
-        lateinit var container: CardView
+        lateinit var container: MaterialCardView
         @BindView(R.id.text_resident_name)
         lateinit var textResidentName: TextView
 
