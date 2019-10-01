@@ -122,6 +122,7 @@ class ResidentsListActivity : AppCompatActivity(),
     private fun loadProfileImage(imageUrl: String?) {
         GlideApp.with(this)
             .load(imageUrl)
+            .placeholder(R.drawable.ic_no_image_profile)
             .into(imgProfile);
     }
 }
