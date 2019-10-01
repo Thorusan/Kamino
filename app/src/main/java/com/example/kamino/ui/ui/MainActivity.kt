@@ -1,10 +1,9 @@
 package com.example.kamino.ui.ui
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import butterknife.BindView
 import butterknife.ButterKnife
@@ -16,6 +15,8 @@ import io.reactivex.disposables.Disposable
 import retrofit2.Response
 
 class MainActivity : AppCompatActivity(), MainViewPresenterContract.ViewInterface {
+
+
     @BindView(R.id.img_planet)
     lateinit var imgPlanet: ImageView;
     @BindView(R.id.btn_residents)
@@ -40,11 +41,14 @@ class MainActivity : AppCompatActivity(), MainViewPresenterContract.ViewInterfac
     lateinit var textPopulation: TextView;
     @BindView(R.id.text_likes)
     lateinit var textLikes: TextView;
+    @BindView(R.id.container_like)
+    lateinit var containerLike: LinearLayout;
 
     var disposable: Disposable? = null
     var planetData: KaminoModel.KaminoPlanet? = null
     var residentsList: ArrayList<String>? = null
     var isThumbnail: Boolean = true;
+    var likes: Int? = 0;
 
     private var mainPresenterImplementation: MainPresenterImplementation? = null
 
@@ -57,7 +61,10 @@ class MainActivity : AppCompatActivity(), MainViewPresenterContract.ViewInterfac
         mainPresenterImplementation = MainPresenterImplementation(this)
         mainPresenterImplementation!!.getPlanetData()
 
+        registerListeners()
+    }
 
+    private fun registerListeners() {
         imgPlanet.setOnClickListener {
             if (!isThumbnail) {
                 loadThumbnailPicture();
@@ -74,7 +81,19 @@ class MainActivity : AppCompatActivity(), MainViewPresenterContract.ViewInterfac
                 intent.putStringArrayListExtra("residents", residentsList)
                 startActivity(intent);
             }
+        }
 
+        containerLike.setOnClickListener {
+            if (isPlanetLiked()) {
+                val toast = Toast.makeText(
+                    applicationContext,
+                    getString(R.string.already_liked_planet),
+                    Toast.LENGTH_LONG
+                )
+                toast.show()
+            } else {
+                mainPresenterImplementation!!.likePlanet();
+            }
         }
     }
 
@@ -91,7 +110,36 @@ class MainActivity : AppCompatActivity(), MainViewPresenterContract.ViewInterfac
             setFields()
             loadThumbnailPicture()
         }
+    }
 
+    override fun updateLikes(responseModel: Response<KaminoModel.Like>) {
+        if (responseModel.body() != null) {
+            likes = responseModel.body()!!.likes
+            textLikes.text = likes.toString()
+
+            val toast = Toast.makeText(
+                applicationContext,
+                getString(R.string.text_after_like_planet),
+                Toast.LENGTH_LONG
+            )
+            toast.show()
+
+            saveLikeToSharedPreferences()
+        }
+    }
+
+    private fun saveLikeToSharedPreferences() {
+        val sharedPref = this.getPreferences(Context.MODE_PRIVATE) ?: return
+        with(sharedPref.edit()) {
+            putBoolean("likes", true)
+            commit()
+        }
+    }
+
+    private fun isPlanetLiked(): Boolean {
+        val sharedPref = this.getPreferences(Context.MODE_PRIVATE)
+        val isPlanedLiked = sharedPref.getBoolean("likes", false)
+        return isPlanedLiked;
     }
 
     private fun setFields() {
@@ -104,7 +152,9 @@ class MainActivity : AppCompatActivity(), MainViewPresenterContract.ViewInterfac
         textTerrain.text = planetData?.terrain.toString()
         textSurfaceWater.text = planetData?.surfaceWater.toString()
         textPopulation.text = planetData?.population.toString()
-        textLikes.text = planetData?.likes.toString()
+
+        likes = planetData?.likes
+        textLikes.text = likes.toString()
     }
 
     private fun loadThumbnailPicture() {
@@ -112,7 +162,7 @@ class MainActivity : AppCompatActivity(), MainViewPresenterContract.ViewInterfac
             .load(planetData?.imageUrl)
             //.thumbnail(0.5f)
             //.override(150, 150)
-            .apply(RequestOptions.overrideOf(250, 250))
+            .apply(RequestOptions.overrideOf(400, 400))
             .into(imgPlanet);
     }
 

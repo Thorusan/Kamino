@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import butterknife.BindView
 import butterknife.ButterKnife
@@ -16,7 +16,7 @@ import java.util.*
 class ResidentsListAdapter(
     val context: Context,
     val residentsList: ArrayList<String>,
-    val onChooseResident : (String) -> Unit
+    val onChooseResident: (String) -> Unit
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -35,13 +35,44 @@ class ResidentsListAdapter(
         holder.bindResident(resident)
 
         holder.container.setOnClickListener {
-
             onChooseResident(resident);
             selectedPosition = position;
             notifyDataSetChanged();
         }
-        holder.container.setBackground(context.getDrawable(R.drawable.selected))
+
+        highlightSelectedRow(position, holder)
+
     }
+
+    private fun highlightSelectedRow(
+        position: Int,
+        holder: ResidentsViewHolder
+    ) {
+        if (getSelectedPosition() == position) {
+            holder.container.setBackgroundColor(
+                ContextCompat.getColor(
+                    context,
+                    R.color.color_selected
+                )
+            )    // selected
+        } else {
+            holder.container.setBackgroundColor(
+                ContextCompat.getColor(
+                    context,
+                    R.color.color_normal
+                )
+            ) // not selected
+        }
+    }
+
+    fun getSelectedPosition(): Int {
+        return selectedPosition
+    }
+
+    fun setSelectedPosition(pos: Int) {
+        selectedPosition = pos
+    }
+
 
     override fun getItemCount(): Int {
         return residentsList.size
@@ -49,14 +80,12 @@ class ResidentsListAdapter(
 
 
     internal inner class ResidentsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private var view: View = itemView;
-        //private var resident: KaminoModel.Resident? = null
-
         @BindView(R.id.container)
         lateinit var container: MaterialCardView
         @BindView(R.id.text_resident_name)
         lateinit var textResidentName: TextView
 
+        private var view: View = itemView;
 
         init {
             view.isClickable = true

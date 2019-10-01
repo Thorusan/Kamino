@@ -166,4 +166,14 @@ open class KaminoModel {
             }
         }
     }
+
+
+    data class Like(
+        @SerializedName("planet_id")
+        val planetId: Int?,
+        @SerializedName("likes ")
+        val likes: Int?
+    )
+
+
 }

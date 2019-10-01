@@ -10,8 +10,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.GET
-import retrofit2.http.Url
+import retrofit2.http.*
 
 
 interface KaminoApiService {
@@ -26,6 +25,11 @@ interface KaminoApiService {
 
     @GET
     fun getResidentTaunWe(@Url url: String): Observable<Response<KaminoModel.Resident>>
+
+    @FormUrlEncoded
+    @POST(BASE_URL + "/planets/10/like")
+    fun likeKaminoPlanet(@Field("planet_id") planetId: Int)
+            : Observable<Response<KaminoModel.Like>>
 
     companion object {
         fun create(): KaminoApiService {
