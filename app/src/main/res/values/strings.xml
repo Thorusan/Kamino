@@ -115,4 +115,6 @@
     <string name="kamino_residents">Kamino residents</string>
     <string name="text_after_like_planet">You liked the planet! Thank you.</string>
     <string name="already_liked_planet">You have already liked this planet!</string>
+    <string name="error">Something went wrong</string>
+    <string name="no_network_try_again">No network. Try again</string>
 </resources>

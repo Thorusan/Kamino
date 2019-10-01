@@ -1,9 +1,6 @@
-package com.example.kamino.restconnection
+package com.example.kamino.network
 
 import com.example.kamino.common.Constants.Companion.BASE_URL
-import com.example.kamino.common.Constants.Companion.RESIDENT_BOBA_FETT
-import com.example.kamino.common.Constants.Companion.RESIDENT_LAMA_SU
-import com.example.kamino.common.Constants.Companion.RESIDENT_TAUN_WE
 import com.example.kamino.datamodel.KaminoModel
 import io.reactivex.Observable
 import retrofit2.Response

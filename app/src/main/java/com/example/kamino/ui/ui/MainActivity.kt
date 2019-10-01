@@ -3,18 +3,24 @@ package com.example.kamino.ui.ui
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.bumptech.glide.request.RequestOptions
 import com.example.kamino.R
 import com.example.kamino.datamodel.KaminoModel
+import com.example.kamino.network.NetworkConnection
 import com.example.kamino.utils.GlideApp
+import com.google.android.material.snackbar.Snackbar
 import io.reactivex.disposables.Disposable
+import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Response
 
 class MainActivity : AppCompatActivity(), MainViewPresenterContract.ViewInterface {
+
 
 
     @BindView(R.id.img_planet)
@@ -43,8 +49,18 @@ class MainActivity : AppCompatActivity(), MainViewPresenterContract.ViewInterfac
     lateinit var textLikes: TextView;
     @BindView(R.id.container_like)
     lateinit var containerLike: LinearLayout;
+    @BindView(R.id.llNoConnection)
+    lateinit var llNoConnection: LinearLayout;
+    @BindView(R.id.progressbar)
+    lateinit var progressbar: ProgressBar;
+    @BindView(R.id.btn_try)
+    lateinit var btnTry: Button;
+    @BindView(R.id.planet_details)
+    lateinit var planetDetails: View;
+    @BindView(R.id.planet_likes)
+    lateinit var planetLikes: ConstraintLayout;
 
-    var disposable: Disposable? = null
+
     var planetData: KaminoModel.KaminoPlanet? = null
     var residentsList: ArrayList<String>? = null
     var isThumbnail: Boolean = true;
@@ -60,6 +76,8 @@ class MainActivity : AppCompatActivity(), MainViewPresenterContract.ViewInterfac
 
         mainPresenterImplementation = MainPresenterImplementation(this)
         mainPresenterImplementation!!.getPlanetData()
+
+        btnTry.setOnClickListener { recreate() }
 
         registerListeners()
     }
@@ -98,7 +116,7 @@ class MainActivity : AppCompatActivity(), MainViewPresenterContract.ViewInterfac
     }
 
     override fun onDestroy() {
-        disposable?.dispose()
+        mainPresenterImplementation!!.onStop()
         super.onDestroy()
     }
 
@@ -153,6 +171,10 @@ class MainActivity : AppCompatActivity(), MainViewPresenterContract.ViewInterfac
         textSurfaceWater.text = planetData?.surfaceWater.toString()
         textPopulation.text = planetData?.population.toString()
 
+        btnResidents.visibility = View.VISIBLE
+        planetDetails.visibility = View.VISIBLE
+        planetLikes.visibility = View.VISIBLE
+
         likes = planetData?.likes
         textLikes.text = likes.toString()
     }
@@ -174,5 +196,34 @@ class MainActivity : AppCompatActivity(), MainViewPresenterContract.ViewInterfac
             .into(imgPlanet);
     }
 
+    open override fun validateError() {
+        Snackbar.make(llView, "Please check your internet connection", Snackbar.LENGTH_SHORT)
+            .setAction("OK", View.OnClickListener { /*Take Action*/ }).show()
 
+        llNoConnection.visibility = View.VISIBLE
+    }
+
+    override fun showProgressbar() {
+        progressbar.visibility = View.VISIBLE
+    }
+
+    override fun hideProgressbar() {
+        progressbar.visibility = View.GONE
+    }
+
+    override fun onError(throwable: Throwable) {
+        llNoConnection.visibility = View.VISIBLE
+
+        val toast = Toast.makeText(
+            applicationContext,
+            getString(R.string.error),
+            Toast.LENGTH_LONG
+        )
+        toast.show()
+
+    }
+
+    override fun checkInternet(): Boolean {
+        return NetworkConnection.isNetworkConnected(applicationContext)
+    }
 }

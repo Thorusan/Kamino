@@ -6,6 +6,7 @@ import retrofit2.Response
 interface ResidentsListViewPresenterContract {
     interface ViewInterface {
         fun displayResidentData(residentData: Response<KaminoModel.Resident>)
+        fun checkInternet(): Boolean
     }
 
     interface PresenterInterface {

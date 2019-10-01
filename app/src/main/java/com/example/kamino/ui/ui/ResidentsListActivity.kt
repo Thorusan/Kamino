@@ -8,11 +8,13 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.example.kamino.R
 import com.example.kamino.datamodel.KaminoModel
+import com.example.kamino.network.NetworkConnection
 import com.example.kamino.utils.GlideApp
 import retrofit2.Response
 import java.util.*
@@ -66,7 +68,11 @@ class ResidentsListActivity : AppCompatActivity(),
         setResidentsListAdapter()
 
         registerListener();
+    }
 
+    override fun onDestroy() {
+        residentsListPresenterImplementation!!.onStop()
+        super.onDestroy()
     }
 
     private fun registerListener() {
@@ -90,9 +96,10 @@ class ResidentsListActivity : AppCompatActivity(),
             this,
             ArrayList(residentsList),
             { item -> callApi_ResidentDetails(item) })
-        recyclerView?.setLayoutManager(LinearLayoutManager(this))
+        recyclerView.setLayoutManager(LinearLayoutManager(this))
+        recyclerView.setItemAnimator(DefaultItemAnimator())
         // Binds the Adapter to the RecyclerView
-        recyclerView?.setAdapter(listAdapter)
+        recyclerView.setAdapter(listAdapter)
     }
 
     /**
@@ -106,15 +113,15 @@ class ResidentsListActivity : AppCompatActivity(),
         containerResident?.visibility = View.VISIBLE;
         containerList?.visibility = View.GONE;
 
-        textName?.text = residentData.body()?.name
-        textHeight?.text = residentData.body()?.height.toString()
-        textMass?.text = residentData.body()?.mass
-        textHairColor?.text = residentData.body()?.hairColor
-        textSkinColor?.text = residentData.body()?.skinColor
-        textEyeColor?.text = residentData.body()?.eyeColor
-        textBirthYear?.text = residentData.body()?.birthYear
-        textGender?.text = residentData.body()?.gender
-        textHomeworld?.text = residentData.body()?.homeworld
+        textName.text = residentData.body()?.name
+        textHeight.text = residentData.body()?.height.toString()
+        textMass.text = residentData.body()?.mass
+        textHairColor.text = residentData.body()?.hairColor
+        textSkinColor.text = residentData.body()?.skinColor
+        textEyeColor.text = residentData.body()?.eyeColor
+        textBirthYear.text = residentData.body()?.birthYear
+        textGender.text = residentData.body()?.gender
+        textHomeworld.text = residentData.body()?.homeworld
 
         loadProfileImage(residentData.body()?.imageUrl)
     }
@@ -124,5 +131,9 @@ class ResidentsListActivity : AppCompatActivity(),
             .load(imageUrl)
             .placeholder(R.drawable.ic_no_image_profile)
             .into(imgProfile);
+    }
+
+    override fun checkInternet(): Boolean {
+        return NetworkConnection.isNetworkConnected(applicationContext)
     }
 }

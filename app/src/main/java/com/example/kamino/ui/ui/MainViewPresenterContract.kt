@@ -7,6 +7,11 @@ interface MainViewPresenterContract {
     interface ViewInterface {
         fun displayPlanetData(planetData: Response<KaminoModel.KaminoPlanet>)
         fun updateLikes(like: Response<KaminoModel.Like>)
+        fun checkInternet(): Boolean
+        fun onError(throwable: Throwable)
+        fun validateError()
+        fun showProgressbar()
+        fun hideProgressbar()
     }
 
     interface PresenterInterface {
