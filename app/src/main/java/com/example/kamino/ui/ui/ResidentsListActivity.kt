@@ -2,10 +2,7 @@ package com.example.kamino.ui.ui
 
 import android.os.Bundle
 import android.view.View
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -14,8 +11,12 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import com.example.kamino.R
 import com.example.kamino.datamodel.KaminoModel
+import com.example.kamino.repositories.DataRepository
+import com.example.kamino.repositories.KaminoApiService
 import com.example.kamino.utils.NetworkConnection
 import com.example.kamino.utils.GlideApp
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Response
 import java.util.*
 
@@ -23,6 +24,7 @@ import java.util.*
 class ResidentsListActivity : AppCompatActivity(),
     ResidentsListViewPresenterContract.ViewInterface {
 
+    private lateinit var dataRepository: DataRepository
     @BindView(R.id.container_list)
     lateinit var containerList: LinearLayout
     @BindView(R.id.recycler_view)
@@ -51,6 +53,16 @@ class ResidentsListActivity : AppCompatActivity(),
     lateinit var textHomeworld: TextView
     @BindView(R.id.btn_close_details)
     lateinit var btnCloseDetails: ImageButton
+    @BindView(R.id.llNoConnection)
+    lateinit var llNoConnection: LinearLayout;
+    @BindView(R.id.progressbar)
+    lateinit var progressbar: ProgressBar;
+    @BindView(R.id.btn_try)
+    lateinit var btnTry: Button;
+
+    val kaminoApiservice by lazy {
+        KaminoApiService.create()
+    }
 
     lateinit var residentsList: ArrayList<String>
 
@@ -62,17 +74,20 @@ class ResidentsListActivity : AppCompatActivity(),
 
         ButterKnife.bind(this)
 
-        residentsListPresenterImplementation = ResidentsListPresenterImplementation(this)
+        dataRepository = DataRepository(kaminoApiservice)
+        residentsListPresenterImplementation = ResidentsListPresenterImplementation(this, dataRepository)
 
         getResidentsFromBundle()
         setResidentsListAdapter()
 
+        btnTry.setOnClickListener { recreate() }
+
         registerListener();
     }
 
-    override fun onDestroy() {
+    override fun onStop() {
         residentsListPresenterImplementation!!.onStop()
-        super.onDestroy()
+        super.onStop()
     }
 
     private fun registerListener() {
@@ -135,5 +150,33 @@ class ResidentsListActivity : AppCompatActivity(),
 
     override fun checkInternet(): Boolean {
         return NetworkConnection.isNetworkConnected(applicationContext)
+    }
+
+    override fun validateError() {
+        Snackbar.make(llView, getString(R.string.check_internet_connection), Snackbar.LENGTH_SHORT)
+            .setAction("OK", View.OnClickListener { /*Take Action*/ }).show()
+
+        llNoConnection.visibility = View.VISIBLE
+        containerList?.visibility = View.GONE;
+    }
+
+    override fun showProgressbar() {
+        progressbar.visibility = View.VISIBLE
+    }
+
+    override fun hideProgressbar() {
+        progressbar.visibility = View.GONE
+    }
+
+    override fun onError(throwable: Throwable) {
+        llNoConnection.visibility = View.VISIBLE
+
+        val toast = Toast.makeText(
+            applicationContext,
+            getString(R.string.error),
+            Toast.LENGTH_LONG
+        )
+        toast.show()
+
     }
 }

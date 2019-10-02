@@ -2,6 +2,7 @@ package com.example.kamino.repositories
 
 import com.example.kamino.common.Constants
 import com.example.kamino.datamodel.KaminoModel
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -70,6 +71,41 @@ class DataRepository {
             ))
     }
 
+    fun callApi_getResidentData(dataRepositoryCallback: ResidentDataRepositoryCallback, residentUrl: String) {
+        lateinit var observable: Observable<Response<KaminoModel.Resident>>
+        if (residentUrl.endsWith(Constants.RESIDENT_BOBA_FETT)) {
+            observable = kaminoApiService.getResidentBobaFett(residentUrl)
+        } else if (residentUrl.endsWith(Constants.RESIDENT_LAMA_SU)) {
+            observable = kaminoApiService.getResidentLamaSu(residentUrl)
+        } else if (residentUrl.endsWith(Constants.RESIDENT_TAUN_WE)) {
+            observable = kaminoApiService.getResidentTaunWe(residentUrl)
+        }
+
+        compositeDisposable.add(observable
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ response ->
+                val responseCode = response.code()
+                when (responseCode) {
+                    200, 201, 202 -> {
+                        dataRepositoryCallback.handleResponse(response);
+                    }
+                    401 -> {
+                    }
+                    402 -> {
+                    }
+                    500 -> {
+                    }
+                    501 -> {
+                    }
+                }
+            },
+                { error ->
+                    dataRepositoryCallback.handleError(error)
+                }
+            ))
+    }
+
     fun onCleared() {
         if(!compositeDisposable.isDisposed){
             compositeDisposable.dispose()
@@ -84,6 +120,11 @@ class DataRepository {
     interface LikeDataRepositoryCallback {
         fun handleResponseLike(response: Response<KaminoModel.Like>)
         fun handleErrorLike(error: Throwable)
+    }
+
+    interface ResidentDataRepositoryCallback {
+        fun handleResponse(response: Response<KaminoModel.Resident>)
+        fun handleError(error: Throwable)
     }
 
 

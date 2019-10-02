@@ -1,12 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout
+    android:id="@+id/llView"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
     tools:context=".ui.ui.ResidentsListActivity">
+
+    <ProgressBar
+        android:id="@+id/progressbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="150dp"
+        android:indeterminate="true"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+    <LinearLayout
+        android:id="@+id/llNoConnection"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_network_anthene" />
+
+        <Button
+            android:id="@+id/btn_try"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="@string/no_network_try_again" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/container_list"
@@ -37,15 +72,16 @@
         android:id="@+id/container_resident"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:layout_marginTop="16dp"
+        android:orientation="vertical"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:visibility="gone">
 
-        <include layout="@layout/resident_details"
-            android:layout_height="match_parent"
-            android:layout_width="match_parent"/>
+        <include
+            layout="@layout/resident_details"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
     </androidx.core.widget.NestedScrollView>
 

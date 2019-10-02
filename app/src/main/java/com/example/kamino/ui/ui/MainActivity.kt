@@ -14,8 +14,8 @@ import com.example.kamino.R
 import com.example.kamino.datamodel.KaminoModel
 import com.example.kamino.repositories.DataRepository
 import com.example.kamino.repositories.KaminoApiService
-import com.example.kamino.utils.NetworkConnection
 import com.example.kamino.utils.GlideApp
+import com.example.kamino.utils.NetworkConnection
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Response
@@ -132,7 +132,7 @@ class MainActivity : AppCompatActivity(), MainViewPresenterContract.ViewInterfac
             setFields()
             loadThumbnailPicture()
 
-            llNoConnection.visibility = View.VISIBLE
+            llNoConnection.visibility = View.GONE
         }
     }
 
@@ -149,7 +149,10 @@ class MainActivity : AppCompatActivity(), MainViewPresenterContract.ViewInterfac
             toast.show()
 
             saveLikeToSharedPreferences()
-            llNoConnection.visibility = View.VISIBLE
+            llNoConnection.visibility = View.GONE
+            btnResidents.visibility = View.VISIBLE
+            planetDetails.visibility = View.VISIBLE
+            planetLikes.visibility = View.VISIBLE
         }
     }
 
@@ -203,11 +206,14 @@ class MainActivity : AppCompatActivity(), MainViewPresenterContract.ViewInterfac
             .into(imgPlanet);
     }
 
-    open override fun validateError() {
+    override fun validateError() {
         Snackbar.make(llView, getString(R.string.check_internet_connection), Snackbar.LENGTH_SHORT)
             .setAction("OK", View.OnClickListener { /*Take Action*/ }).show()
 
         llNoConnection.visibility = View.VISIBLE
+        btnResidents.visibility = View.GONE
+        planetDetails.visibility = View.GONE
+        planetLikes.visibility = View.GONE
     }
 
     override fun showProgressbar() {

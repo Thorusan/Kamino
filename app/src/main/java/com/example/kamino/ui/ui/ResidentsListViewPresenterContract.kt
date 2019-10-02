@@ -7,6 +7,10 @@ interface ResidentsListViewPresenterContract {
     interface ViewInterface {
         fun displayResidentData(residentData: Response<KaminoModel.Resident>)
         fun checkInternet(): Boolean
+        fun validateError()
+        fun onError(throwable: Throwable)
+        fun showProgressbar()
+        fun hideProgressbar()
     }
 
     interface PresenterInterface {
