@@ -20,6 +20,8 @@ class ResidentsListPresenterImplementation : ResidentsListViewPresenterContract.
     }
 
     override fun getResidentData(residentUrl: String) {
+        view!!.showProgressbar()
+
         if (view!!.checkInternet()) {
             dataRepository?.callApi_getResidentData(this, residentUrl);
         } else {
@@ -30,6 +32,7 @@ class ResidentsListPresenterImplementation : ResidentsListViewPresenterContract.
 
     override fun handleResponse(response: Response<KaminoModel.Resident>) {
         view?.displayResidentData(response);
+        view!!.hideProgressbar()
     }
 
     override fun handleError(error: Throwable) {

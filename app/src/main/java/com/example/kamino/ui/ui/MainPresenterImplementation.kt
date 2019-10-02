@@ -23,6 +23,8 @@ class MainPresenterImplementation : MainViewPresenterContract.PresenterInterface
     }
 
     override fun getPlanetData() {
+        view!!.showProgressbar()
+
         if (view!!.checkInternet()) {
             dataRepository.callApi_getKaminoPlanet(this)
         } else {
@@ -33,6 +35,7 @@ class MainPresenterImplementation : MainViewPresenterContract.PresenterInterface
 
     override fun handleResponsePlanet(response: Response<KaminoModel.KaminoPlanet>) {
         view?.displayPlanetData(response);
+        view!!.hideProgressbar()
     }
 
     override fun handleErrorPlanet(error: Throwable) {
@@ -50,6 +53,8 @@ class MainPresenterImplementation : MainViewPresenterContract.PresenterInterface
     }
 
     override fun likePlanet() {
+        view!!.showProgressbar()
+
         if (view!!.checkInternet()) {
             dataRepository.callApi_Like(this)
         } else {
@@ -60,6 +65,7 @@ class MainPresenterImplementation : MainViewPresenterContract.PresenterInterface
 
     override fun handleResponseLike(response: Response<KaminoModel.Like>) {
         view?.updateLikes(response);
+        view!!.hideProgressbar()
     }
 
     override fun handleErrorLike(error: Throwable) {
