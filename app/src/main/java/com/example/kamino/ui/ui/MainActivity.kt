@@ -12,17 +12,15 @@ import butterknife.ButterKnife
 import com.bumptech.glide.request.RequestOptions
 import com.example.kamino.R
 import com.example.kamino.datamodel.KaminoModel
-import com.example.kamino.network.NetworkConnection
+import com.example.kamino.repositories.DataRepository
+import com.example.kamino.repositories.KaminoApiService
+import com.example.kamino.utils.NetworkConnection
 import com.example.kamino.utils.GlideApp
 import com.google.android.material.snackbar.Snackbar
-import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Response
 
 class MainActivity : AppCompatActivity(), MainViewPresenterContract.ViewInterface {
-
-
-
     @BindView(R.id.img_planet)
     lateinit var imgPlanet: ImageView;
     @BindView(R.id.btn_residents)
@@ -60,11 +58,15 @@ class MainActivity : AppCompatActivity(), MainViewPresenterContract.ViewInterfac
     @BindView(R.id.planet_likes)
     lateinit var planetLikes: ConstraintLayout;
 
+    val kaminoApiservice by lazy {
+        KaminoApiService.create()
+    }
 
     var planetData: KaminoModel.KaminoPlanet? = null
     var residentsList: ArrayList<String>? = null
     var isThumbnail: Boolean = true;
     var likes: Int? = 0;
+    var dataRepository: DataRepository? = null
 
     private var mainPresenterImplementation: MainPresenterImplementation? = null
 
@@ -74,7 +76,9 @@ class MainActivity : AppCompatActivity(), MainViewPresenterContract.ViewInterfac
 
         ButterKnife.bind(this);
 
-        mainPresenterImplementation = MainPresenterImplementation(this)
+        dataRepository = DataRepository(kaminoApiservice)
+
+        mainPresenterImplementation = MainPresenterImplementation(this, dataRepository!!)
         mainPresenterImplementation!!.getPlanetData()
 
         btnTry.setOnClickListener { recreate() }
@@ -115,9 +119,9 @@ class MainActivity : AppCompatActivity(), MainViewPresenterContract.ViewInterfac
         }
     }
 
-    override fun onDestroy() {
+    override fun onStop() {
         mainPresenterImplementation!!.onStop()
-        super.onDestroy()
+        super.onStop()
     }
 
     override fun displayPlanetData(responseModel: Response<KaminoModel.KaminoPlanet>) {
@@ -127,6 +131,8 @@ class MainActivity : AppCompatActivity(), MainViewPresenterContract.ViewInterfac
 
             setFields()
             loadThumbnailPicture()
+
+            llNoConnection.visibility = View.VISIBLE
         }
     }
 
@@ -143,6 +149,7 @@ class MainActivity : AppCompatActivity(), MainViewPresenterContract.ViewInterfac
             toast.show()
 
             saveLikeToSharedPreferences()
+            llNoConnection.visibility = View.VISIBLE
         }
     }
 
@@ -197,7 +204,7 @@ class MainActivity : AppCompatActivity(), MainViewPresenterContract.ViewInterfac
     }
 
     open override fun validateError() {
-        Snackbar.make(llView, "Please check your internet connection", Snackbar.LENGTH_SHORT)
+        Snackbar.make(llView, getString(R.string.check_internet_connection), Snackbar.LENGTH_SHORT)
             .setAction("OK", View.OnClickListener { /*Take Action*/ }).show()
 
         llNoConnection.visibility = View.VISIBLE

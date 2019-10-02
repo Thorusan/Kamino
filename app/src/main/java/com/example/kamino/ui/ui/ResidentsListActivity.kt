@@ -14,7 +14,7 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import com.example.kamino.R
 import com.example.kamino.datamodel.KaminoModel
-import com.example.kamino.network.NetworkConnection
+import com.example.kamino.utils.NetworkConnection
 import com.example.kamino.utils.GlideApp
 import retrofit2.Response
 import java.util.*

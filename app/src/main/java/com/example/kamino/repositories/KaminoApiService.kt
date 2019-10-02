@@ -1,4 +1,4 @@
-package com.example.kamino.network
+package com.example.kamino.repositories
 
 import com.example.kamino.common.Constants.Companion.BASE_URL
 import com.example.kamino.datamodel.KaminoModel

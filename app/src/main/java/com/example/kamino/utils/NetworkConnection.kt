@@ -1,4 +1,4 @@
-package com.example.kamino.network
+package com.example.kamino.utils
 
 import android.annotation.SuppressLint
 import android.content.Context

@@ -1,115 +1,74 @@
 package com.example.kamino.ui.ui
 
-import com.example.kamino.common.Constants.Companion.PLANET_ID
-import com.example.kamino.network.KaminoApiService
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.annotations.NonNull
+import com.example.kamino.datamodel.KaminoModel
+import com.example.kamino.repositories.DataRepository
+import com.example.kamino.repositories.KaminoApiService
 import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import retrofit2.HttpException
+import retrofit2.Response
 
-class MainPresenterImplementation : MainViewPresenterContract.PresenterInterface {
+class MainPresenterImplementation : MainViewPresenterContract.PresenterInterface,
+    DataRepository.PlanetDataRepositoryCallback, DataRepository.LikeDataRepositoryCallback {
 
-    val kaminoApiservice by lazy {
-        KaminoApiService.create()
-    }
+    private var dataRepository: DataRepository
 
     var view: MainViewPresenterContract.ViewInterface? = null
 
-    @NonNull
-    var disposable: Disposable? = null
-    var disposableLikes: Disposable? = null
-
-    constructor(view: MainViewPresenterContract.ViewInterface?) {
+    constructor(
+        view: MainViewPresenterContract.ViewInterface?,
+        dataRepository: DataRepository
+    ) {
         this.view = view
+        this.dataRepository = dataRepository
     }
 
     override fun getPlanetData() {
         if (view!!.checkInternet()) {
-            disposable = kaminoApiservice.getKaminoPlanet()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ response ->
-                    view!!.hideProgressbar()
-                    val responseCode = response.code()
-                    when (responseCode) {
-                        200, 201, 202 -> {
-                            view?.displayPlanetData(response);
-                        }
-                        401 -> {
-                        }
-                        402 -> {
-                        }
-                        500 -> {
-                        }
-                        501 -> {
-                        }
-                    }
-                },
-                    { error ->
-                        view!!.hideProgressbar()
-                        if (error is HttpException) {
-                            val response = (error as HttpException).response()
-                            when (response.code()) {
-                                //Response Code
-                            }
-                        } else {
-                            //Handle Other Errors
-                        }
-                        view!!.onError(error)
-                    }
-                )
+            dataRepository.callApi_getKaminoPlanet(this)
         } else {
             view!!.hideProgressbar()
             view!!.validateError()
         }
+    }
+
+    override fun handleResponsePlanet(response: Response<KaminoModel.KaminoPlanet>) {
+        view?.displayPlanetData(response);
+    }
+
+    override fun handleErrorPlanet(error: Throwable) {
+        view!!.hideProgressbar()
+        view!!.onError(error)
+        // TODO: implement HttpException
+        /* if (error is HttpException) {
+            val response = (error as HttpException).response()
+            when (response.code()) {
+                //Response Code
+            }
+        } else {
+            //Handle Other Errors
+        }*/
     }
 
     override fun likePlanet() {
         if (view!!.checkInternet()) {
-            disposableLikes = kaminoApiservice.likeKaminoPlanet(PLANET_ID)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ response ->
-                    view!!.hideProgressbar()
-                    val responseCode = response.code()
-                    when (responseCode) {
-                        200, 201, 202 -> {
-                            view?.updateLikes(response);
-                        }
-                        401 -> {
-                        }
-                        402 -> {
-                        }
-                        500 -> {
-                        }
-                        501 -> {
-                        }
-                    }
-                },
-                    { error ->
-                        if (error is HttpException) {
-                            val response = (error as HttpException).response()
-                            when (response.code()) {
-                                //Response Code
-                            }
-                        } else {
-                            //Handle Other Errors
-                        }
-                        view!!.onError(error)
-                    }
-                )
+            dataRepository.callApi_Like(this)
         } else {
             view!!.hideProgressbar()
             view!!.validateError()
         }
     }
 
+    override fun handleResponseLike(response: Response<KaminoModel.Like>) {
+        view?.updateLikes(response);
+    }
+
+    override fun handleErrorLike(error: Throwable) {
+        view!!.hideProgressbar()
+        view!!.onError(error)
+    }
 
     override fun onStop() {
-        if (disposable != null) {
-            disposable!!.dispose()
-        }
+        dataRepository.onCleared()
     }
 
 

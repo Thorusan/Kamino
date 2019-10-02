@@ -4,7 +4,7 @@ import com.example.kamino.common.Constants.Companion.RESIDENT_BOBA_FETT
 import com.example.kamino.common.Constants.Companion.RESIDENT_LAMA_SU
 import com.example.kamino.common.Constants.Companion.RESIDENT_TAUN_WE
 import com.example.kamino.datamodel.KaminoModel
-import com.example.kamino.network.KaminoApiService
+import com.example.kamino.repositories.KaminoApiService
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.annotations.NonNull
