@@ -28,9 +28,6 @@ class MainPresenterTest {
 
     @Test
     fun when_getting_planet_then_show_loading() {
-        //given
-        //presenter.(mockView)
-
         //when
         presenter.getPlanetData()
 
